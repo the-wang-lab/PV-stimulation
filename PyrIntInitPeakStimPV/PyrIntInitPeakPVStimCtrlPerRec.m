@@ -1,0 +1,113 @@
+function PyrIntInitPeakPVStimCtrlPerRec(methodKMean)
+% compare Pyramidal neurons and PV interneurons on their initial peak
+    
+    pathAnal0 = ['Z:\Yingxue\Draft\PV\PyramidalPVStimALCtrl\'];
+    pathAnal1 = ['Z:\Yingxue\Draft\PV\PyramidalPVStimALCtrl\PerRec\'];
+    pathAnal = ['Z:\Yingxue\Draft\PV\PyramidalPVStimALCtrl\' num2str(methodKMean) '\'];
+    if(exist([pathAnal 'initPeakPyrAllRecStimCtrlTr.mat']))
+        load([pathAnal 'initPeakPyrAllRecStimCtrlTr.mat']);
+    end
+    if(exist([pathAnal0 'initPeakPyrIntAllRecStimCtrlTr.mat']))
+        load([pathAnal0 'initPeakPyrIntAllRecStimCtrlTr.mat']);
+    end
+   
+    PyrStim.avgFRProfile = modPyr1AL.avgFRProfile;
+    PyrStim.avgFRProfileStim = modPyr1AL.avgFRProfileStim;
+    PyrStim.avgFRProfileStimCtrl = modPyr1AL.avgFRProfileStimCtrl;
+            
+    for cond = 1:length(PyrStim1.FRProfile1)
+        recList = unique(PyrStim1.FRProfile1{cond}.indRecPyrRise);
+        for j = 1:length(recList)
+            %% all the cells for each recording and each stim condition
+            % for each recording and each stim condition, finding the FR profile for each pyramidal rise neuron
+            indRecList = PyrStim1.FRProfile1{cond}.indRecPyrRise == recList(j);
+            FRProfile = PyrStim.avgFRProfile(PyrStim1.FRProfile1{cond}.indPyrRise(indRecList),:);
+            FRProfileStim = PyrStim.avgFRProfileStim(PyrStim1.FRProfile1{cond}.indPyrRise(indRecList),:);
+            FRProfileStimCtrl = PyrStim.avgFRProfileStimCtrl(PyrStim1.FRProfile1{cond}.indPyrRise(indRecList),:);
+            
+            % compare good non stim trials with stim trials, pyr rise
+            plotAvgFRProfileCmp(modPyr1AL.timeStepRun,...
+                FRProfile,FRProfileStim,...
+                ['FRPyrRise Rec' num2str(recList(j)) 'N' num2str(sum(indRecList))],...
+                ['Pyr_FRProfilePyrRiseNoStimGoodVsStim_Cond' num2str(cond) '_Rec' num2str(recList(j))],...
+                pathAnal1,[0 5],[{'GoodNoStim'},{'Stim'}])
+            
+            plotAvgFRProfileCmp(modPyr1AL.timeStepRun,...
+                FRProfileStimCtrl,FRProfileStim,...
+                ['FRPyrRise Rec' num2str(recList(j)) 'N' num2str(sum(indRecList))],...
+                ['Pyr_FRProfilePyrRiseStimCtrlVsStim_Cond' num2str(cond) '_Rec' num2str(recList(j))],...
+                pathAnal1,[0 5],[{'StimCtrl'},{'Stim'}])
+            
+            % for each recording and each stim condition, finding the FR profile for each pyramidal down neuron
+            indRecList = PyrStim1.FRProfile1{cond}.indRecPyrDown == recList(j);
+            FRProfile = PyrStim.avgFRProfile(PyrStim1.FRProfile1{cond}.indPyrDown(indRecList),:);
+            FRProfileStim = PyrStim.avgFRProfileStim(PyrStim1.FRProfile1{cond}.indPyrDown(indRecList),:);
+            FRProfileStimCtrl = PyrStim.avgFRProfileStimCtrl(PyrStim1.FRProfile1{cond}.indPyrDown(indRecList),:);
+            
+            % compare good non stim trials with stim trials, pyr rise
+            plotAvgFRProfileCmp(modPyr1AL.timeStepRun,...
+                FRProfile,FRProfileStim,...
+                ['FRPyrDown Rec' num2str(recList(j)) 'N' num2str(sum(indRecList))],...
+                ['Pyr_FRProfilePyrDownNoStimGoodVsStim_Cond' num2str(cond) '_Rec' num2str(recList(j))],...
+                pathAnal1,[0 5],[{'GoodNoStim'},{'Stim'}])
+            
+            plotAvgFRProfileCmp(modPyr1AL.timeStepRun,...
+                FRProfileStimCtrl,FRProfileStim,...
+                ['FRPyrDown Rec' num2str(recList(j)) 'N' num2str(sum(indRecList))],...
+                ['Pyr_FRProfilePyrDownStimCtrlVsStim_Cond' num2str(cond) '_Rec' num2str(recList(j))],...
+                pathAnal1,[0 5],[{'StimCtrl'},{'Stim'}])
+            
+            %% all the cells with fields for each recording and each stim condition
+            % for each recording and each stim condition, finding the FR profile for each pyramidal rise neuron
+            indRecList = PyrStim1.FRProfile1{cond}.indRecPyrRise == recList(j) &...
+                    PyrRise.isNeuWithFieldAligned{cond}.isFieldComb == 1;
+            FRProfile = PyrStim.avgFRProfile(PyrStim1.FRProfile1{cond}.indPyrRise(indRecList),:);
+            FRProfileStim = PyrStim.avgFRProfileStim(PyrStim1.FRProfile1{cond}.indPyrRise(indRecList),:);
+            FRProfileStimCtrl = PyrStim.avgFRProfileStimCtrl(PyrStim1.FRProfile1{cond}.indPyrRise(indRecList),:);
+            
+            % compare good non stim trials with stim trials, pyr rise
+            plotAvgFRProfileCmp(modPyr1AL.timeStepRun,...
+                FRProfile,FRProfileStim,...
+                ['FRPyrRiseFC Rec' num2str(recList(j)) 'N' num2str(sum(indRecList))],...
+                ['Pyr_FRProfilePyrRiseFieldCombNoStimGoodVsStim_Cond' num2str(cond) '_Rec' num2str(recList(j))],...
+                pathAnal1,[0 5],[{'GoodNoStim'},{'Stim'}])
+            
+            plotAvgFRProfileCmp(modPyr1AL.timeStepRun,...
+                FRProfileStimCtrl,FRProfileStim,...
+                ['FRPyrRiseFC Rec' num2str(recList(j)) 'N' num2str(sum(indRecList))],...
+                ['Pyr_FRProfilePyrRiseFieldCombStimCtrlVsStim_Cond' num2str(cond) '_Rec' num2str(recList(j))],...
+                pathAnal1,[0 5],[{'StimCtrl'},{'Stim'}])
+            
+            % for each recording and each stim condition, finding the FR profile for each pyramidal down neuron
+            indRecList = PyrStim1.FRProfile1{cond}.indRecPyrDown == recList(j) &...
+                    PyrDown.isNeuWithFieldAligned{cond}.isFieldComb == 1;
+            FRProfile = PyrStim.avgFRProfile(PyrStim1.FRProfile1{cond}.indPyrDown(indRecList),:);
+            FRProfileStim = PyrStim.avgFRProfileStim(PyrStim1.FRProfile1{cond}.indPyrDown(indRecList),:);
+            FRProfileStimCtrl = PyrStim.avgFRProfileStimCtrl(PyrStim1.FRProfile1{cond}.indPyrDown(indRecList),:);
+            
+            % compare good non stim trials with stim trials, pyr rise
+            plotAvgFRProfileCmp(modPyr1AL.timeStepRun,...
+                FRProfile,FRProfileStim,...
+                ['FRPyrDownFC Rec' num2str(recList(j)) 'N' num2str(sum(indRecList))],...
+                ['Pyr_FRProfilePyrDownFieldCombNoStimGoodVsStim_Cond' num2str(cond) '_Rec' num2str(recList(j))],...
+                pathAnal1,[0 5],[{'GoodNoStim'},{'Stim'}])
+            
+            plotAvgFRProfileCmp(modPyr1AL.timeStepRun,...
+                FRProfileStimCtrl,FRProfileStim,...
+                ['FRPyrDownFC Rec' num2str(recList(j)) 'N' num2str(sum(indRecList))],...
+                ['Pyr_FRProfilePyrDownFieldCombStimCtrlVsStim_Cond' num2str(cond) '_Rec' num2str(recList(j))],...
+                pathAnal1,[0 5],[{'StimCtrl'},{'Stim'}])
+            
+        end
+        
+        pause;
+        close all;
+    end
+end
+
+
+
+
+
+
+
