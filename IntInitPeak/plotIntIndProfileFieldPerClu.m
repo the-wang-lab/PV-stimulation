@@ -1,0 +1,19 @@
+function plotIntIndProfileFieldPerClu(pathAnal,modInt1NoCue,modInt1,FRProfileMean)
+
+    ind = find(modInt1NoCue.timeStepRun == -1.5);
+
+    %% firing profile of individual neurons with field and without field ordered
+    for i = 1:max(modInt1.idxC)
+        indCurCField = modInt1.idxC == i & modInt1.nNeuWithField > 1;
+        plotIndFRProfile(modInt1NoCue.timeStepRun,...
+            modInt1.avgFRProfileNorm(indCurCField,:),['C' num2str(i) ' FR (Hz) F'],...
+            ['Int_IndFRProfileNormCField0to1VsBefRun' num2str(i)],...
+            pathAnal,[],4,FRProfileMean.indFRBefRun,FRProfileMean.indFR0to1) % ordered based on peak time
+        
+        indCurCNoField = modInt1.idxC == i & modInt1.nNeuWithField < 1;
+        plotIndFRProfile(modInt1NoCue.timeStepRun,...
+            modInt1.avgFRProfileNorm(indCurCNoField,:),['C' num2str(i) ' FR (Hz) NoF'],...
+            ['Int_IndFRProfileNormCNoField0to1VsBefRun' num2str(i)],...
+            pathAnal,[],4,FRProfileMean.indFRBefRun,FRProfileMean.indFR0to1) % ordered based on peak time
+        
+    end
